@@ -1,0 +1,98 @@
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <title>
+        Mpos-H5-APP-Test-Demo
+    </title>
+    <style>
+      #app {
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-align: center;
+        color: #2c3e50;
+        font-size: 15px;
+      }
+
+      #nav {
+        padding: 10px;
+      }
+      
+      .btn {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        border-radius: 4px;
+        color: red;
+        border: 1px solid red;
+        margin: 20px 0;
+      }
+    </style>
+</head>
+<body>
+  <div id="app">
+    <div id="nav">
+      <div class="btn" id="btn-get-auth-info">获取登录授权信息</div>
+      <div class="btn" id="btn-get-location">获取地理位置</div>
+      <div class="btn" id="btn-scan">扫一扫</div>
+      <div class="btn" id="btn-get-record-auth">获取录音权限</div>
+      <div style="text-align: left; margin: 20px 0 10px">返回值res:</div>
+      <div id="msg" style="text-align: left"></div>
+      <div
+        v-show="resContent"
+        class="btn"
+        id="btn-clear-msg"
+        style="width: 40%; color: blue; border-color: blue"
+      >
+        清除返回值
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+        function bindClickEvent () {
+          document.getElementById('btn-get-auth-info').onclick = getAuth
+          document.getElementById('btn-get-location').onclick = getLocation
+          document.getElementById('btn-scan').onclick = scan
+          document.getElementById('btn-get-record-auth').onclick = getRecordAuth
+          document.getElementById('btn-clear-msg').onclick = clearMsg
+        }        
+        function getAuth() {
+          commonCallApp("getAuthInfo");
+        }     
+        function getLocation() {
+          commonCallApp("getLocation", { type: "wgs84" });
+        }
+        function scan() {
+          commonCallApp("scanQRCode");
+        }
+        function getRecordAuth() {
+          commonCallApp("checkPermisssion", { type: "record" });
+        }
+        function commonCallApp(methodName, params) {          
+          try {
+            window.jlpay[methodName]({
+              ...params,
+              success: function (res) {
+                let msg = methodName + ": send get responseData from java, data = " + JSON.stringify(res);
+                console.log(msg);
+                alert(msg);
+                document.getElementById("msg").innerHTML = msg
+              },
+            });
+          } catch (e) {
+            alert(e);
+            document.getElementById("msg").innerHTML = e
+          }
+        }
+
+        function clearMsg() {
+            document.getElementById("msg").innerHTML = ''
+        }
+
+        bindClickEvent();
+</script>
+
+</html>
+
